@@ -6,7 +6,7 @@ author:
       - name: "University of Toronto"
 date: today
 abstract: |
-  Investors frequently choose to buy into actively managed portfolios in hopes of excess returns in comparison with passive index benchmarks. While many do at certain time periods, it is difficult to isolate whether the excess returns are the result of genuine skill or the randomness in the market. This research aims to test whether a very classical and intuitive strategy - buying the dip - can beat a random portfolio with the same number of buys and sells with statistical significance (α=0.05). Using a Monte Carlo simulation, we create 10,000 portfolios contrained to the same time scope, underlying assets, number of buys/sells and position sizing rules as the buy-the-dip strategy. Comparing the strategy's outcome with this simulated distribution of outcomes will allow us to assess whether its timing signals produce unusually high returns in comparison to the random portfolio benchmark. 
+  Investors frequently choose to buy into actively managed portfolios in hopes of excess returns in comparison with passive index benchmarks. While many do at certain time periods, it is difficult to isolate whether the excess returns are the result of genuine skill or the randomness in the market. This research aims to test whether a very classical and intuitive strategy - buying the dip, selling the rally - can beat a random portfolio with the same number of buys and sells with statistical significance (α = 0.05). Using a Monte Carlo simulation, we create 10,000 portfolios constrained to the same time scope, underlying assets, number of buys/sells and position sizing rules as the buy-the-dip, sell-the-rally strategy. Comparing the strategy's outcome with this simulated distribution of outcomes will allow us to assess whether its timing signals produce unusually high returns in comparison to the random portfolio benchmark. 
 format:
   pdf:
     documentclass: article
@@ -34,13 +34,13 @@ $$
 r_{t}=\frac{P_{t}-P_{t-1}}{P_{t-1}}
 $$
 
-At the beginning of the simulation `t=0`, all portfolios have a total of $100,000 split evenly between cash and the underlying investment. Starting with this ratio ensures that when a trigger for buy or sale occurs early on, the portfolio has the cash or inventory to execute that action.
+At the beginning of the simulation `t = 0`, all portfolios have a total of $100,000 split evenly between cash and the underlying investment. Starting with this ratio ensures that when a trigger for buy or sale occurs early on, the portfolio has the cash or inventory to execute that action. Then, `NVDA` and `SPY` are tested seperately.
 
-2. Buy-on-dip strategy definition
+2. Buy-on-dip, Sell-on-rally strategy definition
 
-Rather than using a fixed percentage threshold (ex. a `5%` threshold), we use a mean-volatility measure. This way, the "dip" for each asset depends on its historical volatility, which avoids scenerios where way more buy/sell decisions are made on a volatile stock `NVDA` under the fixed threshold `5%` than on less volatile funds, `SPR`. 
+Rather than using a fixed percentage threshold (ex. a `5%` threshold), we use a mean-volatility measure. This way, the "dip" and "rally" for each asset depends on its historical volatility, which avoids scenarios where way more buy/sell decisions are made on a volatile stock `NVDA` under the fixed threshold `5%` than on less volatile funds, `SPY`. 
 
-For each trading day, we calculate the rolling standard deviation $\sigma_{t-1}$ over the previous `L = 20` trading days. We only look at the past 20 days as data long ago shouldn't be accounted for in the current trend.
+For each trading day, we calculate the rolling standard deviation $\sigma_{t-1}$ over the previous `L = 20` trading days. We only look at the past 20 days as data long ago are less relevant to the current trend.
 $$
 \sigma_{t-1} = \sqrt{\frac{1}{L - 1}\sum_{k=1}^{L}\left(r_{t-k}-\bar{r}_{t-1}\right)^2}
 $$
@@ -50,7 +50,7 @@ Z_t = \frac{r_t-\bar{r}_{t-1}}{\sigma_{t-1}}
 $$
 Trade execution then follows a fractional rule according to the daily $Z$-Score $Z_t$:
 
-Buy signal($Z_t <= 2$): When the day's returns drop by two or more standard deviations below the rolling mean, spend 20% of its available cash balance to purchase shares.
+Buy signal($Z_t <= -2$): When the day's returns drop by two or more standard deviations below the rolling mean, spend 20% of its available cash balance to purchase shares.
 
 Sell signal($Z_t >= 2$): When the day's returns rise by two or more standard deviations above the rolling mean, sell 20% of its available inventory for cash.
 
