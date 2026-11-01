@@ -27,7 +27,7 @@ jupyter: python3
 # Methodology
 1. Data and Assets 
 
-For the purpose of this simulation, daily price data for the SPDR S&P 500 ETF (`SPY`) and NVIDIA (`NVDA`) is examined from January 1, 2016 to January 1, 2026. This time period is appropriate because the market has experienced several macro-shocks such as the 2020 COVID-19 bear market, the 2021 post-pandemic hyper-expansion bull market, the 2023 AI Driven bull market and the 2025 Tariff-Shock bear market. The daily Adjusted Close `Adj Close` will be fetched from the Python library `yfinance` to automatically account for dividends and stock splits.
+For this simulation, the stock NVIDIA (`NVDA`) and ETF SPDR S&P 500 (`SPY`) are observed from January 1, 2016 to January 1, 2026. This time period is especially valuable as we see how the model adapts to many macro-shocks such as the pandemic, the post-pandemic expansion and the Trump tariffs. The daily Adjusted Close `Adj Close` will be fetched from the Python library `yfinance` to automatically account for dividends and stock splits.
 
 To evaluate the price movement, we calculate the daily return ⁠$R_t$ for trading day ⁠$t$ by using the adjusted closing price ⁠$P_t$:
 $$
@@ -36,9 +36,11 @@ $$
 
 At the beginning of the simulation `t=0`, all portfolios have a total of $100,000 split evenly between cash and the underlying investment. Starting with this ratio ensures that when a trigger for buy or sale occurs early on, the portfolio has the cash or inventory to execute that action.
 
-2. Buy-on-dip definition
+2. Buy-on-dip strategy definition
 
-Rather than using a fixed percentage threshold (ex. a `5%` threshold), we use a mean-volatility measure. This way, the "dip" for each asset depends on its historical volatility, which avoids scenerios where way more buy/sell decisions are made on a volatile stock `NVDA` under the fixed threshold `5%` than on less volatile funds, `SPR`. For each trading day `t`, we calculate the average sample standard deviation $\sigma_{t-1}$ over a lookback period of `L = 20` trading days:
+Rather than using a fixed percentage threshold (ex. a `5%` threshold), we use a mean-volatility measure. This way, the "dip" for each asset depends on its historical volatility, which avoids scenerios where way more buy/sell decisions are made on a volatile stock `NVDA` under the fixed threshold `5%` than on less volatile funds, `SPR`. 
+
+For each trading day, we calculate the rolling standard deviation $\sigma_{t-1}$ over the previous `L = 20` trading days. We only look at the past 20 days as data long ago shouldn't be accounted for in the current trend.
 $$
 \sigma_{t-1} = \sqrt{\frac{1}{L - 1}\sum_{k=1}^{L}\left(r_{t-k}-\bar{r}_{t-1}\right)^2}
 $$
