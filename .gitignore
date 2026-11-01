@@ -1,0 +1,11 @@
+# Quarto & LaTeX temporary files
+/.quarto/
+*_files/
+*.aux
+*.log
+*.pdf
+*.tex
+
+# Python cache
+__pycache__/
+.DS_Store
