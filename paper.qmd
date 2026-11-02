@@ -42,14 +42,19 @@ At the beginning of the simulation `t = 0`, all portfolios have a total of \$100
 
 Rather than using a fixed percentage threshold (ex. a `5%` threshold) for a "dip", we use a mean-volatility measure. This way, the "dip" and "rally" for each asset depends on its historical volatility, which avoids scenarios where way more buy/sell decisions are made on a volatile stock `NVDA` under the fixed threshold `5%` than on less volatile funds, `SPY`. 
 
-For each trading day, we calculate the rolling standard deviation $\sigma_{t-1}$ over the previous `L = 20` trading days. We only look at the past 20 days for this simulation as data long ago are less relevant to the current trend.
+For each trading day, we calculate the rolling standard deviation $\sigma_{t-1}$ over the previous `L = 20` trading days. We only look at the past 20 days for this simulation as data long ago are less relevant to the current trend. Using only data until `t-1` avoids the look ahead bias. 
 $$
 \sigma_{t-1} = \sqrt{\frac{1}{L - 1}\sum_{k=1}^{L}\left(r_{t-k}-\bar{r}_{t-1}\right)^2}
 $$
-Using only data until `t-1` avoids the look ahead bias. We then calculate the daily $Z$-Score by standardizing the daily return $\sigma_{t}$:
+
+Calculate $\hat{r}_t$, the model's predicted returns for trading day `t` using a intercept `c` for baseline expected returns and slope $\phi$ to measure how strongly the last trading day's returns affect today's.
+
+$$\hat{r}_t ={c}+{\phi}\,r_{t-1}$$
+
+We then calculate the daily $Z$-Score by standardizing the daily return $\sigma_{t}$:
 $$
-Z_t = \frac{r_t-\bar{r}_{t-1}}{\sigma_{t-1}}
-$$
+Z_t = \frac{r_t-\hat{r}_t}{\sigma_{t-1}}
+$$  
 Trade execution follows a fractional rule according to the daily $Z$-Score $Z_t$:
 
 Buy signal($Z_t \le -2$): When the day's returns drop by two or more standard deviations below the rolling mean, spend 20% of its available cash balance to purchase shares.
