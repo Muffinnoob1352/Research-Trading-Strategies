@@ -1,5 +1,5 @@
 ---
-title: "Your Paper Title Here"
+title: "Active Strategy Return - Test of Signficance"
 author: 
   - name: "Aojie Gong"
     affiliations:
@@ -29,40 +29,40 @@ jupyter: python3
 
 For this simulation, the stock NVIDIA (`NVDA`) and ETF SPDR S&P 500 (`SPY`) are observed from January 1, 2016 to January 1, 2026. This time period is especially valuable as we see how the model adapts to many macro-shocks such as the pandemic, the post-pandemic expansion and the Trump tariffs. The daily Adjusted Close `Adj Close` will be fetched from the Python library `yfinance` to automatically account for dividends and stock splits.
 
-To evaluate the price movement, we calculate the daily return ⁠$R_t$ for trading day ⁠$t$ by using the adjusted closing price ⁠$P_t$:
+To evaluate the price movement, we calculate the daily return ⁠$r_t$ for trading day ⁠$t$ by using the adjusted closing price ⁠$P_t$:
 $$
 r_{t}=\frac{P_{t}-P_{t-1}}{P_{t-1}}
 $$
 
-At the beginning of the simulation `t = 0`, all portfolios have a total of $100,000 split evenly between cash and the underlying investment. Starting with this ratio ensures that when a trigger for buy or sale occurs early on, the portfolio has the cash or inventory to execute that action. Then, `NVDA` and `SPY` are tested seperately.
-
-2. Buy-on-dip, Sell-on-rally strategy definition
-
-Rather than using a fixed percentage threshold (ex. a `5%` threshold), we use a mean-volatility measure. This way, the "dip" and "rally" for each asset depends on its historical volatility, which avoids scenarios where way more buy/sell decisions are made on a volatile stock `NVDA` under the fixed threshold `5%` than on less volatile funds, `SPY`. 
-
-For each trading day, we calculate the rolling standard deviation $\sigma_{t-1}$ over the previous `L = 20` trading days. We only look at the past 20 days as data long ago are less relevant to the current trend.
-$$
-\sigma_{t-1} = \sqrt{\frac{1}{L - 1}\sum_{k=1}^{L}\left(r_{t-k}-\bar{r}_{t-1}\right)^2}
-$$
-Using only data until `t-1` avoids the look ahead bias. We then calculate the daily $Z$-Score by standarizing the daily return $\sigma_{t}$:
-$$
-Z_t = \frac{r_t-\bar{r}_{t-1}}{\sigma_{t-1}}
-$$
-Trade execution then follows a fractional rule according to the daily $Z$-Score $Z_t$:
-
-Buy signal($Z_t <= -2$): When the day's returns drop by two or more standard deviations below the rolling mean, spend 20% of its available cash balance to purchase shares.
-
-Sell signal($Z_t >= 2$): When the day's returns rise by two or more standard deviations above the rolling mean, sell 20% of its available inventory for cash.
-
-Hold signal($-2 < Z_t < 2$): Do nothing otherwise.
-
-Over the entire duration of the backtest, the total number of Buy signals ($N_{Buy}$) and Sell signals ($N_{Sell}$) are recorded.
+At the beginning of the simulation `t = 0`, all portfolios have a total of \$100,000 split evenly between cash and the underlying investment. Starting with this ratio ensures that when a trigger for buy or sale occurs early on, the portfolio has the cash or inventory to execute that action. Then, `NVDA` and `SPY` are tested separately.
 
 ## Data and Asset Universe
 
 ## Target Strategy Specification
 
+Rather than using a fixed percentage threshold (ex. a `5%` threshold) for a "dip", we use a mean-volatility measure. This way, the "dip" and "rally" for each asset depends on its historical volatility, which avoids scenarios where way more buy/sell decisions are made on a volatile stock `NVDA` under the fixed threshold `5%` than on less volatile funds, `SPY`. 
+
+For each trading day, we calculate the rolling standard deviation $\sigma_{t-1}$ over the previous `L = 20` trading days. We only look at the past 20 days for this simulation as data long ago are less relevant to the current trend.
+$$
+\sigma_{t-1} = \sqrt{\frac{1}{L - 1}\sum_{k=1}^{L}\left(r_{t-k}-\bar{r}_{t-1}\right)^2}
+$$
+Using only data until `t-1` avoids the look ahead bias. We then calculate the daily $Z$-Score by standardizing the daily return $\sigma_{t}$:
+$$
+Z_t = \frac{r_t-\bar{r}_{t-1}}{\sigma_{t-1}}
+$$
+Trade execution follows a fractional rule according to the daily $Z$-Score $Z_t$:
+
+Buy signal($Z_t \le -2$): When the day's returns drop by two or more standard deviations below the rolling mean, spend 20% of its available cash balance to purchase shares.
+
+Sell signal($Z_t \ge 2$): When the day's returns rise by two or more standard deviations above the rolling mean, sell 20% of its available inventory for cash.
+
+Hold signal($-2 < Z_t < 2$): Do nothing otherwise.
+
+Over the entire duration of the backtest, the total number of Buy signals ($N_{Buy}$) and Sell signals ($N_{Sell}$) are recorded.
+
 ## Monte Carlo Simulation
+
+
 
 ## Hypothesis Testing
 
