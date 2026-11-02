@@ -47,11 +47,13 @@ $$
 \sigma_{t-1} = \sqrt{\frac{1}{L - 1}\sum_{k=1}^{L}\left(r_{t-k}-\bar{r}_{t-1}\right)^2}
 $$
 
-Calculate $\hat{r}_t$, the model's predicted returns for trading day `t` using a intercept `c` for baseline expected returns and slope $\phi$ to measure how strongly the last trading day's returns affect today's.
+Calculate $\hat{r}_t$, the model's predicted returns for trading day `t` using a intercept `c`, the prediction when yesturday's return is 0, and slope $\phi$, which measure how strongly the last trading day's returns affect today's.
 
 $$\hat{r}_t ={c}+{\phi}\,r_{t-1}$$
 
-We then calculate the daily $Z$-Score by standardizing the daily return $\sigma_{t}$:
+The predicted return will be fitted with least-squares regression to the previous 60 pairs of ${r}_t$ and ${r}_{t-1}$, refitted each trading day.
+
+We then calculate the daily $Z$-Score by standardizing the daily return:
 $$
 Z_t = \frac{r_t-\hat{r}_t}{\sigma_{t-1}}
 $$  
@@ -67,8 +69,17 @@ Over the entire duration of the backtest, the total number of Buy signals ($N_{B
 
 ## Monte Carlo Simulation
 
+As a control for whether the actively managed portfolio really performanced unusually well, we introduce a simulation of 10,000 portfolios. 
 
+1. Randomly select $N_{Buy} + N_{Sell}$ total distinct trading dates without replacement across the same underlying time period. 
 
+2. Then, randomly assign exactly $N_{Buy}$ dates from the selected trading dates as buy executions, rest sell executions. 
+
+3. The portfolio is executed chronologically, using the same intial $50,000 cash $50,000 assets, 20% sizing rules, and prices.
+
+4. The ending total value of each portfolio value is recorded.
+
+The resulting distribution of portfolio values provide a benchmark to evaluate the active strategy's timing.
 ## Hypothesis Testing
 
 # Results
