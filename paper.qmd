@@ -87,6 +87,9 @@ The resulting distribution of portfolio values provide a benchmark to evaluate t
 
 # Discussion and Limitations
 
+Limitations:
+Even though the randomized distribution of portfolios have many similar characteristics as the active strategy, there are other factors that determine the growth of a portfolio when evaluating a overall bull market such as cash drag, which are not identical for all portfolios.
+
 # Conclusion
 
 # References
